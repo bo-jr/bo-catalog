@@ -1,0 +1,27 @@
+# Values for the shared chart, oci://ghcr.io/bo-jr/charts/service.
+#
+# chartVersion pins the chart by exact version: rendering these values with any
+# other chart version fails. image.digest is supplied at render time — by CI
+# from Phase 3, by `task sandbox:deploy` in bo-platform before that — and is
+# never committed here.
+chartVersion: 0.1.0
+name: catalog
+version: v1
+image:
+  repository: ghcr.io/bo-jr/bo-catalog
+  digest: ""
+workload: Deployment
+replicas: 1
+dependencies: []
+env:
+  FAILURE_RATE: "0"
+  EXTRA_LATENCY_MS: "0"
+# The Secret CloudNativePG generates for the catalog-db Cluster, which lives in
+# bo-platform/databases/<env>/. Phase 7 moves its source to OpenBao via ESO; this
+# reference does not change. See bo-platform DECISIONS.md 2026-09-29.
+secretEnv:
+  - { name: DATABASE_URL, secret: catalog-db-app, key: uri }
+otlpEndpoint: ""
+resources:
+  requests: { cpu: 50m,  memory: 64Mi }
+  limits:   { cpu: 500m, memory: 128Mi }
