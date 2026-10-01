@@ -1,10 +1,10 @@
 # Values for the shared chart, oci://ghcr.io/bo-jr/charts/service.
 #
 # chartVersion pins the chart by exact version: rendering these values with any
-# other chart version fails. image.digest is supplied at render time — by CI
-# from Phase 3, by `task sandbox:deploy` in bo-platform before that — and is
+# other chart version fails. image.digest and commitTimestamp are supplied at
+# render time — by CI, or by `task sandbox:deploy` in bo-platform — and are
 # never committed here.
-chartVersion: 0.1.0
+chartVersion: 0.2.0
 name: catalog
 version: v1
 image:
