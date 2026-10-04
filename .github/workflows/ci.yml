@@ -1,0 +1,35 @@
+# CI for catalog. All of it lives in bo-platform's reusable workflow, pinned
+# here by commit SHA, so changing CI is a deliberate re-pin (bo-platform
+# DECISIONS.md 2026-09-30).
+#
+# Pull request:  go test + Kyverno on a placeholder render. Nothing is published.
+# Push to main:  native amd64 + arm64 builds -> index on ghcr.io by digest ->
+#                cosign + build provenance -> rolling dev PR in bo-deploy, which
+#                auto-merges on its required `validate` check. The run fails if
+#                that PR does not merge.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  ci:
+    # bo-jr/bo-platform#16 (phase-3/first-run), merged as 13e8797
+    uses: bo-jr/bo-platform/.github/workflows/service-ci.yml@13e8797b0066ca1026229eec63b26ac8d9d19491
+    with:
+      service: catalog
+    secrets:
+      # Fine-grained PAT, bo-deploy only. Read only by the push-to-main promote job.
+      deploy-token: ${{ secrets.BO_DEPLOY_TOKEN }}
+    # The ceiling for every job in the reusable workflow; each job asks for less.
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      deployments: write
